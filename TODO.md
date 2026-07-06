@@ -22,8 +22,8 @@
   - `src/lib/` — client Supabase, thèmes par app
 - [x] **Middleware de routing par hostname** : `photoshop.elwen.dev` → rewrite vers `/photoshop`, etc. (lire `request.headers.get('host')`) — `src/proxy.ts` (nom Next 16 du middleware)
 - [x] Dev local multi-domaines : `photoshop.localhost:3000` fonctionne nativement dans Chrome/Firefox (le documenter dans le README) ; fallback `?app=photoshop` si besoin
-- [ ] Projet Vercel + assigner les 3 domaines `photoshop/illustrator/premierepro.elwen.dev`
-- [ ] Variables d'env : réutiliser les clés du **projet Supabase du portfolio**
+- [x] Projet Vercel + assigner les 3 domaines `photoshop/illustrator/premierepro.elwen.dev` (actifs dès que le DNS wildcard sera posé chez OVH)
+- [x] Variables d'env : réutiliser les clés du **projet Supabase du portfolio**
 - [x] **Dès le jour 1** : headers `Content-Security-Policy: frame-ancestors 'self' https://elwen.dev https://www.elwen.dev` dans `next.config.js` (condition d'embed dans le portfolio — voir skill `portfolio-embed-check`)
 - [x] Empêcher l'accès croisé (`photoshop.elwen.dev/illustrator` ne doit pas exister) : le middleware force chaque host sur son app
 
