@@ -41,7 +41,7 @@
 
 ## Phase 2 — Données (Supabase)
 
-- [ ] Table `artworks` :
+- [x] Table `artworks` :
   ```sql
   id uuid pk, app text check (app in ('photoshop','illustrator')),
   title text,                -- nom du fichier affiché dans l'onglet (ex. affiche-concert.psd / logo-x.ai)
@@ -52,7 +52,7 @@
   sort_order int, visible boolean default true,
   created_at timestamptz default now()
   ```
-- [ ] Table `videos` :
+- [x] Table `videos` :
   ```sql
   id uuid pk, title text,        -- nom de la séquence dans Premiere
   youtube_id text,               -- extrait de l'URL à l'insertion
@@ -60,9 +60,10 @@
   sort_order int, visible boolean default true,
   created_at timestamptz default now()
   ```
-- [ ] RLS : lecture publique (`visible = true`), écriture authentifiée (même compte Supabase Auth que le backoffice portfolio)
-- [ ] Bucket Storage `artworks` (lecture publique, upload authentifié)
-- [ ] Fetch côté Server Components + `revalidatePath` après modification admin
+- [x] RLS : lecture publique (`visible = true`), écriture authentifiée (même compte Supabase Auth que le backoffice portfolio)
+- [x] Bucket Storage `artworks` (lecture publique, upload authentifié)
+- [x] Fetch côté Server Components (`src/lib/content.ts`)
+- [ ] `revalidatePath` après modification admin (à faire avec les Server Actions de l'admin)
 
 ## Phase 3 — Photoshop (photoshop.elwen.dev)
 
