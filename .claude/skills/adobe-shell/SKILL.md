@@ -53,6 +53,7 @@ CSS variables injectées par un `<ThemeProvider app>` au niveau du layout de cha
 ## Composants partagés (`src/components/adobe/`)
 
 - **`<AppShell>`** : barre de menu Adobe en haut (Fichier, Édition, …, Aide — items factices mais menus réellement ouvrables : clic pour ouvrir, survol pour naviguer entre menus ouverts, Échap/clic extérieur pour fermer), zone centrale en grid, `<StatusBar>` en bas (zoom %, dimensions).
+- **Barre de menu embarquée** : quand l'app tourne dans l'iframe du portfolio, `<AppShell>` masque sa propre barre et envoie ses `menus` à la menu bar de l'OS via `postMessage` (`usePortfolioMenuBridge`, protocole dans `src/lib/portfolio-channel.ts`, miroir de `../portfolio/src/lib/iframe-app-channel.ts`). Les clics remontent via la prop `onMenuCommand(menuLabel, itemLabel)` d'`<AppShell>` (non câblée tant qu'aucune action réelle n'existe). En standalone (visite directe, SEO), la barre interne reste affichée.
 - **`<PanelGroup>` / `<Panel>`** : colonne de panneaux à onglets (façon Calques/Propriétés/Commentaires), header 24px avec le nom en 11px uppercase, repliable au double-clic du header.
 - **`<FileTabs>`** : onglets de documents au-dessus du canvas — nom du fichier + croix, onglet actif avec un liseré `--accent`, scroll horizontal si débordement.
 - **`<Toolbar>`** : barre verticale gauche d'icônes 24px, outil actif sur fond `--surface-2`, tooltip nommé après ~500ms.

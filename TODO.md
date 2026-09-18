@@ -29,15 +29,15 @@
 
 ## Phase 1 — UI commune Adobe
 
-- [ ] **Design tokens** du thème sombre Adobe : fonds `#1e1e1e` / `#252525` / `#323232`, bordures `#0f0f0f`, texte `#d4d4d4`, accent par app (Ps `#31A8FF`, Ai `#FF9A00`, Pr `#9999FF`) — via CSS variables, le thème est injecté par l'app active
-- [ ] Composants partagés :
-  - [ ] `<AppShell>` : barre de menu Adobe (Fichier, Édition, Image/Objet/Séquence, Fenêtre, Aide — menus factices mais ouvrables, même mécanique que la menu bar du portfolio)
-  - [ ] `<PanelGroup>` / `<Panel>` : panneaux à onglets empilables (façon Calques/Propriétés), repliables
-  - [ ] `<FileTabs>` : onglets de fichiers ouverts en haut du canvas (nom + croix de fermeture)
-  - [ ] `<Toolbar>` : barre d'outils verticale à icônes (outils factices, tooltip au survol, outil « actif »)
-  - [ ] `<StatusBar>` : barre du bas (zoom %, dimensions du document)
-- [ ] **Écran d'accueil** façon Adobe (« Bienvenue dans Photoshop ») : grille des fichiers récents = la liste des œuvres depuis Supabase ; clic → ouvre le fichier
-- [ ] Layout **responsive fenêtre portfolio** : utilisable dès ~700×450 (les panneaux latéraux se replient en icônes sous un seuil de largeur), `100dvh`, aucun débordement horizontal
+- [x] **Design tokens** du thème sombre Adobe : fonds `#1e1e1e` / `#252525` / `#323232`, bordures `#0f0f0f`, texte `#d4d4d4`, accent par app (Ps `#31A8FF`, Ai `#FF9A00`, Pr `#9999FF`) — via CSS variables, le thème est injecté par l'app active
+- [x] Composants partagés :
+  - [x] `<AppShell>` : barre de menu Adobe (Fichier, Édition, Image/Objet/Séquence, Fenêtre, Aide — menus factices mais ouvrables, même mécanique que la menu bar du portfolio)
+  - [x] `<PanelGroup>` / `<Panel>` : panneaux à onglets empilables (façon Calques/Propriétés), repliables
+  - [x] `<FileTabs>` : onglets de fichiers ouverts en haut du canvas (nom + croix de fermeture)
+  - [x] `<Toolbar>` : barre d'outils verticale à icônes (outils factices, tooltip au survol, outil « actif »)
+  - [x] `<StatusBar>` : barre du bas (zoom %, dimensions du document)
+- [x] **Écran d'accueil** façon Adobe (« Bienvenue dans Photoshop ») : grille des fichiers récents = la liste des œuvres depuis Supabase ; clic → ouvre le fichier
+- [x] Layout **responsive fenêtre portfolio** : utilisable dès ~700×450 (les panneaux latéraux se replient en icônes sous un seuil de largeur), `100dvh`, aucun débordement horizontal
 
 ## Phase 2 — Données (Supabase)
 
