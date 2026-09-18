@@ -26,4 +26,9 @@ Chaque host est verrouillé sur son app : `photoshop.localhost:3000/illustrator`
 
 - `npm run dev` / `build` / `start`
 - `npm run lint` — ESLint
+- `npm run typecheck` — TypeScript
 - `npm run format` / `format:check` — Prettier
+
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) runs lint, typecheck, Prettier check and build on every pull request and push to `main`.
