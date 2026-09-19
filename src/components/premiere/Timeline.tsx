@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type PointerEvent } from "react";
 
-import { formatTimecode } from "@/lib/timecode";
+import { formatRulerLabel } from "@/lib/timecode";
 
 const PIXELS_PER_SECOND = 10;
 const RULER_INTERVAL_SECONDS = 10;
@@ -75,7 +75,7 @@ export function Timeline({ title, clipSeconds, currentSeconds, onSeek }: Timelin
                 className="absolute bottom-0 top-0 border-l border-text-dim/40 pl-1 font-mono text-[9px] leading-5"
                 style={{ left: seconds * PIXELS_PER_SECOND }}
               >
-                {formatTimecode(seconds).slice(3, 8)}
+                {formatRulerLabel(seconds)}
               </span>
             ))}
           </div>
