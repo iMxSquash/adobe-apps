@@ -159,6 +159,7 @@ export function DocumentWorkspace({
             <DocumentCanvas
               key={artwork.id}
               artwork={artwork}
+              variant={variant}
               view={views[artwork.id] ?? INITIAL_VIEW_STATE}
               isActive={artwork.id === activeArtwork.id}
               onViewChange={updateView}

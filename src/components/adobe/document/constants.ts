@@ -9,3 +9,4 @@ export const FILE_EXTENSION: Record<DocumentVariant, string> = {
   photoshop: ".psd",
   illustrator: ".ai",
 };
+export const ARTBOARD_LABEL = "Plan de travail 1";
