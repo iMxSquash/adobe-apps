@@ -12,6 +12,7 @@ import { CLOSE_ITEM_LABEL, FILE_MENU_LABEL, type AdobeMenu } from "@/lib/adobe-m
 import type { Artwork } from "@/lib/content";
 
 import { CommentsPanelContent } from "./CommentsPanel";
+import { FILE_EXTENSION, type DocumentVariant } from "./constants";
 import { DocumentCanvas } from "./DocumentCanvas";
 import { LayersPanelContent } from "./LayersPanel";
 import { PropertiesPanelContent } from "./PropertiesPanel";
@@ -25,12 +26,20 @@ import {
 
 interface DocumentWorkspaceProps {
   appLabel: string;
+  variant: DocumentVariant;
   menus: AdobeMenu[];
   tools: ToolbarTool[];
   artworks: Artwork[];
 }
 
-export function DocumentWorkspace({ appLabel, menus, tools, artworks }: DocumentWorkspaceProps) {
+export function DocumentWorkspace({
+  appLabel,
+  variant,
+  menus,
+  tools,
+  artworks,
+}: DocumentWorkspaceProps) {
+  const getFileName = (artwork: Artwork) => `${artwork.title}${FILE_EXTENSION[variant]}`;
   const [openIds, setOpenIds] = useState<string[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [views, setViews] = useState<Record<string, DocumentViewState>>({});
@@ -80,7 +89,7 @@ export function DocumentWorkspace({ appLabel, menus, tools, artworks }: Document
           appLabel={appLabel}
           items={artworks.map((artwork) => ({
             id: artwork.id,
-            title: artwork.title,
+            title: getFileName(artwork),
             subtitle: artwork.layer_name,
             href: `/${artwork.slug}`,
             thumbnailUrl: artwork.image_url,
@@ -123,7 +132,7 @@ export function DocumentWorkspace({ appLabel, menus, tools, artworks }: Document
       toolbar={<Toolbar tools={tools} activeTool={activeTool} onSelect={setActiveTool} />}
       fileTabs={
         <FileTabs
-          tabs={openArtworks.map((a) => ({ id: a.id, label: a.title }))}
+          tabs={openArtworks.map((a) => ({ id: a.id, label: getFileName(a) }))}
           activeId={activeArtwork.id}
           onSelect={setActiveId}
           onClose={closeDocument}
@@ -142,7 +151,7 @@ export function DocumentWorkspace({ appLabel, menus, tools, artworks }: Document
     >
       <div className="flex h-full min-h-0 flex-col">
         <p className="shrink-0 truncate bg-surface-1 px-3 py-1 text-[11px] text-text-dim">
-          {activeArtwork.title} @ {Math.round(activeView.zoom ?? DEFAULT_ZOOM)} % (Calque :{" "}
+          {getFileName(activeArtwork)} @ {Math.round(activeView.zoom ?? DEFAULT_ZOOM)} % (Calque :{" "}
           {activeArtwork.layer_name})
         </p>
         <div className="min-h-0 flex-1">

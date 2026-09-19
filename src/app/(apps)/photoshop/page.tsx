@@ -11,6 +11,7 @@ export default async function PhotoshopPage() {
   return (
     <DocumentWorkspace
       appLabel={APP_LABEL.photoshop}
+      variant="photoshop"
       menus={PHOTOSHOP_MENUS}
       tools={PHOTOSHOP_TOOLS}
       artworks={artworks}
