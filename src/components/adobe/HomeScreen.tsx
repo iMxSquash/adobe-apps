@@ -13,9 +13,11 @@ interface HomeScreenProps {
   appLabel: string;
   items: HomeScreenItem[];
   emptyMessage: string;
+  /** When provided, a click opens the item in place instead of navigating to its href. */
+  onOpen?: (id: string) => void;
 }
 
-export function HomeScreen({ appLabel, items, emptyMessage }: HomeScreenProps) {
+export function HomeScreen({ appLabel, items, emptyMessage, onOpen }: HomeScreenProps) {
   return (
     <div className="flex h-full min-h-0">
       <aside className="hidden w-48 shrink-0 flex-col gap-1 border-r border-border bg-surface-1 p-4 text-xs sm:flex">
@@ -32,6 +34,11 @@ export function HomeScreen({ appLabel, items, emptyMessage }: HomeScreenProps) {
               <li key={item.id}>
                 <Link
                   href={item.href}
+                  onClick={(event) => {
+                    if (!onOpen) return;
+                    event.preventDefault();
+                    onOpen(item.id);
+                  }}
                   className="group block overflow-hidden rounded border border-border bg-surface-1 hover:border-accent"
                 >
                   <div className="relative aspect-video bg-surface-2">
