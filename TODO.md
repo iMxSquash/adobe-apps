@@ -63,7 +63,7 @@
 - [x] RLS : lecture publique (`visible = true`), écriture authentifiée (même compte Supabase Auth que le backoffice portfolio)
 - [x] Bucket Storage `artworks` (lecture publique, upload authentifié)
 - [x] Fetch côté Server Components (`src/lib/content.ts`)
-- [ ] `revalidatePath` après modification admin (à faire avec les Server Actions de l'admin)
+- [x] `revalidatePath` après modification admin (Server Actions de l'admin)
 
 ## Phase 3 — Photoshop (photoshop.elwen.dev)
 
@@ -97,12 +97,12 @@
 
 ## Phase 6 — Admin (`/admin` sur chaque sous-domaine)
 
-- [ ] Login Supabase Auth (même compte que le portfolio), middleware qui protège `/admin/*` sur les 3 hosts
-- [ ] L'admin s'adapte au sous-domaine : sur `photoshop.elwen.dev/admin` → œuvres Photoshop ; `illustrator...` → œuvres Illustrator ; `premierepro...` → vidéos (avec un switcher pour naviguer entre les trois sans changer de domaine)
-- [ ] **CRUD œuvres** (Ps/Ai) : titre, **upload image** (→ bucket `artworks`, lire les dimensions à l'upload pour remplir `width/height`), `layer_name`, `description` (le commentaire), ordre, visibilité — avec prévisualisation de l'image
-- [ ] **CRUD vidéos** (Pr) : coller n'importe quelle URL YouTube (watch/youtu.be/shorts) → **extraction du `youtube_id`** + récupération auto du titre et de la durée via oEmbed, ordre, visibilité, aperçu embed dans le formulaire
-- [ ] Suppression avec confirmation + nettoyage du fichier dans le Storage
-- [ ] `revalidatePath` des apps concernées après chaque écriture
+- [x] Login Supabase Auth (même compte que le portfolio), middleware qui protège `/admin/*` sur les 3 hosts
+- [x] L'admin s'adapte au sous-domaine : sur `photoshop.elwen.dev/admin` → œuvres Photoshop ; `illustrator...` → œuvres Illustrator ; `premierepro...` → vidéos (avec un switcher pour naviguer entre les trois sans changer de domaine)
+- [x] **CRUD œuvres** (Ps/Ai) : titre, **upload image** (→ bucket `artworks`, lire les dimensions à l'upload pour remplir `width/height`), `layer_name`, `description` (le commentaire), ordre, visibilité — avec prévisualisation de l'image
+- [x] **CRUD vidéos** (Pr) : coller n'importe quelle URL YouTube (watch/youtu.be/shorts) → **extraction du `youtube_id`** + récupération auto du titre et de la durée via oEmbed, ordre, visibilité, aperçu embed dans le formulaire
+- [x] Suppression avec confirmation + nettoyage du fichier dans le Storage
+- [x] `revalidatePath` des apps concernées après chaque écriture
 
 ## Phase 7 — Embed-readiness & mise en ligne
 

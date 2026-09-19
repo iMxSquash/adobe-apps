@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getEmbedUrl, getThumbnailUrl, isValidYoutubeId } from "./youtube";
+import { extractYoutubeId, getEmbedUrl, getThumbnailUrl, isValidYoutubeId } from "./youtube";
 
 describe("isValidYoutubeId", () => {
   it("accepts an 11 character id", () => {
@@ -45,5 +45,26 @@ describe("getThumbnailUrl", () => {
 
   it("throws on an invalid id", () => {
     expect(() => getThumbnailUrl("nope", "hqdefault")).toThrow("Invalid YouTube id");
+  });
+});
+
+describe("extractYoutubeId", () => {
+  const ID = "dQw4w9WgXcQ";
+
+  it.each([
+    `https://www.youtube.com/watch?v=${ID}`,
+    `https://www.youtube.com/watch?feature=share&v=${ID}&t=42s`,
+    `https://youtu.be/${ID}`,
+    `https://youtu.be/${ID}?si=abc`,
+    `https://www.youtube.com/shorts/${ID}`,
+    `https://www.youtube.com/embed/${ID}`,
+  ])("extracts the id from %s", (url) => {
+    expect(extractYoutubeId(url)).toBe(ID);
+  });
+
+  it("returns null for unrecognized input", () => {
+    expect(extractYoutubeId("")).toBeNull();
+    expect(extractYoutubeId("https://example.com/video")).toBeNull();
+    expect(extractYoutubeId("https://www.youtube.com/watch?v=short")).toBeNull();
   });
 });

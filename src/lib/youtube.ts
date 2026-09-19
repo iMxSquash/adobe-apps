@@ -24,3 +24,10 @@ export function getEmbedUrl(id: string, origin: string): string {
   });
   return `https://www.youtube-nocookie.com/embed/${id}?${params}`;
 }
+
+const YOUTUBE_URL_ID = /(?:v=|youtu\.be\/|shorts\/|embed\/)([A-Za-z0-9_-]{11})/;
+
+/** Accepts watch, youtu.be, shorts and embed URLs; the id is what gets stored, never the URL. */
+export function extractYoutubeId(input: string): string | null {
+  return input.match(YOUTUBE_URL_ID)?.[1] ?? null;
+}

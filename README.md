@@ -18,7 +18,14 @@ npm run dev
 
 Puis ouvrir **http://photoshop.localhost:3000** (ou `illustrator.localhost:3000`, `premierepro.localhost:3000`) — les sous-domaines `*.localhost` fonctionnent nativement dans Chrome et Firefox, sans toucher à `/etc/hosts`. `http://localhost:3000` nu redirige vers `photoshop.localhost:3000`.
 
-L'admin est commun aux 3 hosts : `http://photoshop.localhost:3000/admin`.
+## Admin
+
+L'admin est commun aux 3 hosts : `http://photoshop.localhost:3000/admin`. Le host choisit la section par défaut (photoshop : œuvres Ps, illustrator : œuvres Ai, premierepro : vidéos), un sélecteur permet de passer de l'une à l'autre.
+
+- Connexion Supabase Auth (même compte que le backoffice du portfolio, inscriptions désactivées). Le cookie de session est propre à chaque host : une connexion par sous-domaine.
+- `/admin/*` est protégé par `src/proxy.ts` et chaque Server Action revérifie la session (`getUser()`).
+- Œuvres : upload direct vers le bucket `artworks` via URL signée (PNG, JPEG, WebP, AVIF, 10 Mo max, SVG refusé), les magic bytes sont vérifiés côté serveur avant l'enregistrement.
+- Vidéos : coller une URL YouTube (watch, youtu.be, shorts, embed), le titre est récupéré via oEmbed, la durée (`mm:ss`) est saisie à la main.
 
 Chaque host est verrouillé sur son app : `photoshop.localhost:3000/illustrator` répond 404.
 
