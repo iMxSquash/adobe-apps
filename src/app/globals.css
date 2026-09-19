@@ -37,3 +37,23 @@ body {
   color: var(--text);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
+
+@keyframes comment-pin-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+.comment-pin {
+  animation: comment-pin-pulse 1.6s ease-out 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comment-pin {
+    animation: none;
+  }
+}
