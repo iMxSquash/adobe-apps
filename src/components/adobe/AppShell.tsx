@@ -72,15 +72,15 @@ export function AppShell({
   return (
     <div ref={rootRef} className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
       {!isEmbedded && (
-        <div className="flex h-7 shrink-0 items-center gap-1 border-b border-border bg-surface-1 px-2 text-xs text-text-dim">
-          <span className="mr-2 font-medium text-text">{appLabel}</span>
+        <div className="flex h-7 shrink-0 items-center gap-0.5 border-b border-border bg-surface-1 px-2 text-xs sm:gap-1 text-text-dim">
+          <span className="mr-1 whitespace-nowrap font-medium text-text sm:mr-2">{appLabel}</span>
           {menus.map((menu) => (
             <div key={menu.label} className="relative">
               <button
                 type="button"
                 onClick={() => handleMenuClick(menu.label)}
                 onMouseEnter={() => setOpenMenu((current) => (current ? menu.label : current))}
-                className={`rounded px-2 py-1 hover:bg-surface-2 hover:text-text ${
+                className={`rounded px-1.5 py-1 hover:bg-surface-2 sm:px-2 hover:text-text ${
                   openMenu === menu.label ? "bg-surface-2 text-text" : ""
                 }`}
               >
