@@ -4,8 +4,11 @@ export interface AdobeMenu {
   items: string[];
 }
 
+export const FILE_MENU_LABEL = "Fichier";
+export const CLOSE_ITEM_LABEL = "Fermer";
+
 const FILE_MENU: AdobeMenu = {
-  label: "Fichier",
+  label: FILE_MENU_LABEL,
   items: [
     "Nouveau...",
     "Ouvrir...",
@@ -14,7 +17,7 @@ const FILE_MENU: AdobeMenu = {
     "Enregistrer",
     "Enregistrer sous...",
     "-",
-    "Fermer",
+    CLOSE_ITEM_LABEL,
   ],
 };
 
