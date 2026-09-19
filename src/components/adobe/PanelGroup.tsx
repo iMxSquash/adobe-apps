@@ -5,10 +5,12 @@ import { Children, isValidElement, useState, type ReactElement, type ReactNode }
 interface PanelProps {
   title: string;
   defaultCollapsed?: boolean;
+  /** Drops the content padding, for panels that manage their own layout edge to edge. */
+  flush?: boolean;
   children: ReactNode;
 }
 
-export function Panel({ title, defaultCollapsed = false, children }: PanelProps) {
+export function Panel({ title, defaultCollapsed = false, flush = false, children }: PanelProps) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
 
   return (
@@ -21,7 +23,9 @@ export function Panel({ title, defaultCollapsed = false, children }: PanelProps)
         {title}
       </button>
       {!collapsed && (
-        <div className="min-h-0 flex-1 overflow-y-auto bg-surface-1 p-2">{children}</div>
+        <div className={`min-h-0 flex-1 overflow-y-auto bg-surface-1 ${flush ? "" : "p-2"}`}>
+          {children}
+        </div>
       )}
     </div>
   );
