@@ -6,7 +6,7 @@ import { memo, useCallback, useEffect, useRef, useState, type PointerEvent } fro
 import type { Artwork } from "@/lib/content";
 
 import { CommentCard } from "./CommentCard";
-import { COMMENT_PIN_POSITION } from "./constants";
+import { ARTBOARD_LABEL, COMMENT_PIN_POSITION, type DocumentVariant } from "./constants";
 import { clampZoom, DEFAULT_ZOOM, fitZoom, zoomAtPoint, type DocumentViewState } from "./zoom";
 
 // Transparency checkerboard: 8px squares.
@@ -18,8 +18,13 @@ const WHEEL_ZOOM_SENSITIVITY = 0.01;
 const PIXELATED_ABOVE_ZOOM = 200;
 const FALLBACK_DOCUMENT_SIZE = { width: 1200, height: 800 };
 
+// Illustrator work area: grey surface around a white artboard.
+const WORK_AREA_CLASS = "bg-[#4b4b4b]";
+const ARTBOARD_STYLE = { backgroundColor: "#ffffff" };
+
 interface DocumentCanvasProps {
   artwork: Artwork;
+  variant: DocumentVariant;
   view: DocumentViewState;
   isActive: boolean;
   onViewChange: (id: string, update: (view: DocumentViewState) => DocumentViewState) => void;
@@ -27,6 +32,7 @@ interface DocumentCanvasProps {
 
 export const DocumentCanvas = memo(function DocumentCanvas({
   artwork,
+  variant,
   view,
   isActive,
   onViewChange,
@@ -40,6 +46,7 @@ export const DocumentCanvas = memo(function DocumentCanvas({
   const docHeight = artwork.height ?? FALLBACK_DOCUMENT_SIZE.height;
   const zoom = view.zoom ?? fitZoom(viewportSize.width, viewportSize.height, docWidth, docHeight);
   const { id } = artwork;
+  const isArtboard = variant === "illustrator";
 
   const panBy = useCallback(
     (dx: number, dy: number) =>
@@ -115,9 +122,9 @@ export const DocumentCanvas = memo(function DocumentCanvas({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerEnd}
       onPointerCancel={handlePointerEnd}
-      className={`relative h-full w-full cursor-grab touch-none overflow-hidden bg-surface-0 active:cursor-grabbing ${
-        isActive ? "" : "hidden"
-      }`}
+      className={`relative h-full w-full cursor-grab touch-none overflow-hidden active:cursor-grabbing ${
+        isArtboard ? WORK_AREA_CLASS : "bg-surface-0"
+      } ${isActive ? "" : "hidden"}`}
     >
       <div
         className="absolute left-1/2 top-1/2 will-change-transform shadow-[0_2px_12px_rgba(0,0,0,0.6)]"
@@ -125,9 +132,17 @@ export const DocumentCanvas = memo(function DocumentCanvas({
           width: docWidth,
           height: docHeight,
           transform: `translate(${view.panX}px, ${view.panY}px) translate(-50%, -50%) scale(${zoom / 100})`,
-          ...CHECKERBOARD_STYLE,
+          ...(isArtboard ? ARTBOARD_STYLE : CHECKERBOARD_STYLE),
         }}
       >
+        {isArtboard && (
+          <span
+            className="absolute bottom-full left-0 mb-1 whitespace-nowrap text-[10px] text-text-dim"
+            style={{ transform: `scale(${100 / zoom})`, transformOrigin: "bottom left" }}
+          >
+            {ARTBOARD_LABEL}
+          </span>
+        )}
         <Image
           src={artwork.image_url}
           alt={artwork.title}

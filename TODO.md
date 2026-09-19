@@ -67,22 +67,22 @@
 
 ## Phase 3 — Photoshop (photoshop.elwen.dev)
 
-- [ ] Layout : toolbar gauche · canvas central · colonne droite (panneaux **Calques**, Commentaires, Propriétés) · onglets fichiers en haut
-- [ ] **Canvas** : fond damier de transparence, l'image de l'œuvre centrée avec son ombre, zoom via molette + Cmd/Ctrl et boutons (25–200 %), pan au drag (bonus : outil main)
-- [ ] **Panneau Calques** fidèle : ligne « Arrière-plan » verrouillée (cadenas) + ligne du calque avec **vignette de l'image + `layer_name`**, œil de visibilité cliquable (masque réellement l'image — détail qui fait mouche), opacité/mode de fusion factices
-- [ ] **Commentaire = la description** : panneau Commentaires (avatar + « Elwen » + date + texte) **et** épingle de commentaire posée sur le canvas qui ouvre la bulle au clic — comme la collaboration Adobe
-- [ ] Onglets multi-fichiers : toutes les œuvres `app='photoshop'` ouvrables simultanément, switch par onglet, état par fichier conservé (zoom, visibilité calque)
-- [ ] Fermeture du dernier onglet → retour écran d'accueil
-- [ ] Détails de fidélité : nom de fichier `*.psd` dans l'onglet, `title` + zoom dans la barre de titre du document, status bar avec dimensions réelles de l'image
+- [x] Layout : toolbar gauche · canvas central · colonne droite (panneaux **Calques**, Commentaires, Propriétés) · onglets fichiers en haut
+- [x] **Canvas** : fond damier de transparence, l'image de l'œuvre centrée avec son ombre, zoom via molette + Cmd/Ctrl et boutons (25–200 %), pan au drag (bonus : outil main)
+- [x] **Panneau Calques** fidèle : ligne « Arrière-plan » verrouillée (cadenas) + ligne du calque avec **vignette de l'image + `layer_name`**, œil de visibilité cliquable (masque réellement l'image — détail qui fait mouche), opacité/mode de fusion factices
+- [x] **Commentaire = la description** : panneau Commentaires (avatar + « Elwen » + date + texte) **et** épingle de commentaire posée sur le canvas qui ouvre la bulle au clic — comme la collaboration Adobe
+- [x] Onglets multi-fichiers : toutes les œuvres `app='photoshop'` ouvrables simultanément, switch par onglet, état par fichier conservé (zoom, visibilité calque)
+- [x] Fermeture du dernier onglet → retour écran d'accueil
+- [x] Détails de fidélité : nom de fichier `*.psd` dans l'onglet, `title` + zoom dans la barre de titre du document, status bar avec dimensions réelles de l'image
 
 ## Phase 4 — Illustrator (illustrator.elwen.dev)
 
-- [ ] Réutilise le shell de la Phase 3 avec le thème Ai (accent orange) — ne dupliquer AUCUN composant, seules les différences sont locales :
-  - [ ] Canvas = **plan de travail blanc** (pas de damier), zone de travail grise autour, libellé « Plan de travail 1 »
-  - [ ] Onglets `*.ai`
-  - [ ] Toolbar avec les outils Illustrator (sélection, plume, forme, texte…)
-  - [ ] Panneaux droits : Calques (même mécanique vignette + `layer_name` + œil), Commentaires (description), Nuancier factice
-- [ ] Œuvres filtrées sur `app='illustrator'`
+- [x] Réutilise le shell de la Phase 3 avec le thème Ai (accent orange) — ne dupliquer AUCUN composant, seules les différences sont locales :
+  - [x] Canvas = **plan de travail blanc** (pas de damier), zone de travail grise autour, libellé « Plan de travail 1 »
+  - [x] Onglets `*.ai`
+  - [x] Toolbar avec les outils Illustrator (sélection, plume, forme, texte…)
+  - [x] Panneaux droits : Calques (même mécanique vignette + `layer_name` + œil), Commentaires (description), Nuancier factice
+- [x] Œuvres filtrées sur `app='illustrator'`
 - [ ] Vérifier le rendu des deux thèmes côte à côte (deux fenêtres dans le portfolio ouvertes en même temps)
 
 ## Phase 5 — Premiere Pro (premierepro.elwen.dev)
