@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { AppShell } from "@/components/adobe/AppShell";
 import { FileTabs } from "@/components/adobe/FileTabs";
@@ -10,6 +10,7 @@ import { StatusBar } from "@/components/adobe/StatusBar";
 import { Toolbar, type ToolbarTool } from "@/components/adobe/Toolbar";
 import { CLOSE_ITEM_LABEL, FILE_MENU_LABEL, type AdobeMenu } from "@/lib/adobe-menus";
 import type { Artwork } from "@/lib/content";
+import { documentBase, groupArtworksIntoDocuments, type ArtworkDocument } from "@/lib/documents";
 
 import { CommentsPanelContent } from "./CommentsPanel";
 import { FILE_EXTENSION, type DocumentVariant } from "./constants";
@@ -40,15 +41,16 @@ export function DocumentWorkspace({
   tools,
   artworks,
 }: DocumentWorkspaceProps) {
-  const getFileName = (artwork: Artwork) => `${artwork.title}${FILE_EXTENSION[variant]}`;
+  const documents = useMemo(() => groupArtworksIntoDocuments(artworks), [artworks]);
+  const getFileName = (file: ArtworkDocument) => `${file.title}${FILE_EXTENSION[variant]}`;
   const [openIds, setOpenIds] = useState<string[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [views, setViews] = useState<Record<string, DocumentViewState>>({});
   const [activeTool, setActiveTool] = useState(tools[0]?.id ?? "");
 
-  const openArtworks = openIds.flatMap((id) => artworks.find((a) => a.id === id) ?? []);
-  const activeArtwork = openArtworks.find((a) => a.id === activeId) ?? null;
-  const activeView = activeArtwork ? (views[activeArtwork.id] ?? INITIAL_VIEW_STATE) : null;
+  const openFiles = openIds.flatMap((id) => documents.find((file) => file.id === id) ?? []);
+  const activeFile = openFiles.find((file) => file.id === activeId) ?? null;
+  const activeView = activeFile ? (views[activeFile.id] ?? INITIAL_VIEW_STATE) : null;
 
   const updateView = useCallback(
     (id: string, update: (view: DocumentViewState) => DocumentViewState) =>
@@ -72,9 +74,9 @@ export function DocumentWorkspace({
   }
 
   function stepZoom(direction: 1 | -1) {
-    if (!activeArtwork || !activeView) return;
+    if (!activeFile || !activeView) return;
     const next = nextZoomStep(activeView.zoom ?? DEFAULT_ZOOM, direction);
-    updateView(activeArtwork.id, (view) => zoomAtPoint(view, next, 0, 0));
+    updateView(activeFile.id, (view) => zoomAtPoint(view, next, 0, 0));
   }
 
   function handleMenuCommand(menuLabel: string, itemLabel: string) {
@@ -83,18 +85,21 @@ export function DocumentWorkspace({
     }
   }
 
-  if (!activeArtwork || !activeView) {
+  if (!activeFile || !activeView) {
     return (
       <AppShell appLabel={appLabel} menus={menus} onMenuCommand={handleMenuCommand}>
         <HomeScreen
           appLabel={appLabel}
-          items={artworks.map((artwork) => ({
-            id: artwork.id,
-            title: getFileName(artwork),
-            subtitle: artwork.layer_name,
-            href: `/${artwork.slug}`,
-            thumbnailUrl: artwork.image_url,
-          }))}
+          items={documents.map((file) => {
+            const base = documentBase(file);
+            return {
+              id: file.id,
+              title: getFileName(file),
+              subtitle: file.layers.length > 1 ? `${file.layers.length} calques` : base.layer_name,
+              href: `/${base.slug}`,
+              thumbnailUrl: base.image_url,
+            };
+          })}
           emptyMessage="Aucune œuvre pour le moment."
           onOpen={openDocument}
         />
@@ -106,18 +111,20 @@ export function DocumentWorkspace({
     <PanelGroup>
       <Panel title="Calques">
         <LayersPanelContent
-          artwork={activeArtwork}
-          isLayerVisible={activeView.isLayerVisible}
-          onToggleVisibility={() =>
-            updateView(activeArtwork.id, (view) => ({
+          file={activeFile}
+          hiddenLayerIds={activeView.hiddenLayerIds}
+          onToggleVisibility={(layerId) =>
+            updateView(activeFile.id, (view) => ({
               ...view,
-              isLayerVisible: !view.isLayerVisible,
+              hiddenLayerIds: view.hiddenLayerIds.includes(layerId)
+                ? view.hiddenLayerIds.filter((id) => id !== layerId)
+                : [...view.hiddenLayerIds, layerId],
             }))
           }
         />
       </Panel>
       <Panel title="Commentaires">
-        <CommentsPanelContent artwork={activeArtwork} />
+        <CommentsPanelContent artwork={documentBase(activeFile)} />
       </Panel>
       {variant === "illustrator" ? (
         <Panel title="Nuancier">
@@ -125,7 +132,7 @@ export function DocumentWorkspace({
         </Panel>
       ) : (
         <Panel title="Propriétés">
-          <PropertiesPanelContent artwork={activeArtwork} />
+          <PropertiesPanelContent file={activeFile} />
         </Panel>
       )}
     </PanelGroup>
@@ -139,8 +146,8 @@ export function DocumentWorkspace({
       toolbar={<Toolbar tools={tools} activeTool={activeTool} onSelect={setActiveTool} />}
       fileTabs={
         <FileTabs
-          tabs={openArtworks.map((a) => ({ id: a.id, label: getFileName(a) }))}
-          activeId={activeArtwork.id}
+          tabs={openFiles.map((file) => ({ id: file.id, label: getFileName(file) }))}
+          activeId={activeFile.id}
           onSelect={setActiveId}
           onClose={closeDocument}
         />
@@ -149,8 +156,8 @@ export function DocumentWorkspace({
       statusBar={
         <StatusBar
           zoom={activeView.zoom ?? DEFAULT_ZOOM}
-          width={activeArtwork.width ?? undefined}
-          height={activeArtwork.height ?? undefined}
+          width={documentBase(activeFile).width ?? undefined}
+          height={documentBase(activeFile).height ?? undefined}
           onZoomIn={() => stepZoom(1)}
           onZoomOut={() => stepZoom(-1)}
         />
@@ -158,17 +165,17 @@ export function DocumentWorkspace({
     >
       <div className="flex h-full min-h-0 flex-col">
         <p className="shrink-0 truncate bg-surface-1 px-3 py-1 text-[11px] text-text-dim">
-          {getFileName(activeArtwork)} @ {Math.round(activeView.zoom ?? DEFAULT_ZOOM)} % (Calque :{" "}
-          {activeArtwork.layer_name})
+          {getFileName(activeFile)} @ {Math.round(activeView.zoom ?? DEFAULT_ZOOM)} % (Calque :{" "}
+          {activeFile.layers.at(-1)?.layer_name})
         </p>
         <div className="min-h-0 flex-1">
-          {openArtworks.map((artwork) => (
+          {openFiles.map((file) => (
             <DocumentCanvas
-              key={artwork.id}
-              artwork={artwork}
+              key={file.id}
+              file={file}
               variant={variant}
-              view={views[artwork.id] ?? INITIAL_VIEW_STATE}
-              isActive={artwork.id === activeArtwork.id}
+              view={views[file.id] ?? INITIAL_VIEW_STATE}
+              isActive={file.id === activeFile.id}
               onViewChange={updateView}
             />
           ))}

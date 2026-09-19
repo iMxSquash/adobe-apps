@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { memo, useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
 
-import type { Artwork } from "@/lib/content";
+import { documentBase, type ArtworkDocument } from "@/lib/documents";
 
 import { CommentCard } from "./CommentCard";
 import { ARTBOARD_LABEL, COMMENT_PIN_POSITION, type DocumentVariant } from "./constants";
@@ -23,7 +23,7 @@ const WORK_AREA_CLASS = "bg-[#4b4b4b]";
 const ARTBOARD_STYLE = { backgroundColor: "#ffffff" };
 
 interface DocumentCanvasProps {
-  artwork: Artwork;
+  file: ArtworkDocument;
   variant: DocumentVariant;
   view: DocumentViewState;
   isActive: boolean;
@@ -31,7 +31,7 @@ interface DocumentCanvasProps {
 }
 
 export const DocumentCanvas = memo(function DocumentCanvas({
-  artwork,
+  file,
   variant,
   view,
   isActive,
@@ -42,10 +42,11 @@ export const DocumentCanvas = memo(function DocumentCanvas({
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const [isCommentOpen, setIsCommentOpen] = useState(false);
 
-  const docWidth = artwork.width ?? FALLBACK_DOCUMENT_SIZE.width;
-  const docHeight = artwork.height ?? FALLBACK_DOCUMENT_SIZE.height;
+  const base = documentBase(file);
+  const docWidth = base.width ?? FALLBACK_DOCUMENT_SIZE.width;
+  const docHeight = base.height ?? FALLBACK_DOCUMENT_SIZE.height;
   const zoom = view.zoom ?? fitZoom(viewportSize.width, viewportSize.height, docWidth, docHeight);
-  const { id } = artwork;
+  const { id } = file;
   const isArtboard = variant === "illustrator";
 
   const panBy = useCallback(
@@ -143,20 +144,23 @@ export const DocumentCanvas = memo(function DocumentCanvas({
             {ARTBOARD_LABEL}
           </span>
         )}
-        <Image
-          src={artwork.image_url}
-          alt={artwork.title}
-          width={docWidth}
-          height={docHeight}
-          draggable={false}
-          // Served as-is: resizing would blur the pixels Photoshop shows at high zoom.
-          unoptimized
-          // Hidden rather than unmounted: toggling the eye must not re-decode the image.
-          className={`pointer-events-none block h-full w-full select-none ${
-            view.isLayerVisible ? "" : "invisible"
-          }`}
-          style={zoom > PIXELATED_ABOVE_ZOOM ? { imageRendering: "pixelated" } : undefined}
-        />
+        {file.layers.map((layer) => (
+          <Image
+            key={layer.id}
+            src={layer.image_url}
+            alt={layer.layer_name}
+            width={docWidth}
+            height={docHeight}
+            draggable={false}
+            // Served as-is: resizing would blur the pixels Photoshop shows at high zoom.
+            unoptimized
+            // Hidden rather than unmounted: toggling the eye must not re-decode the image.
+            className={`pointer-events-none absolute inset-0 block h-full w-full select-none object-contain ${
+              view.hiddenLayerIds.includes(layer.id) ? "invisible" : ""
+            }`}
+            style={zoom > PIXELATED_ABOVE_ZOOM ? { imageRendering: "pixelated" } : undefined}
+          />
+        ))}
 
         {/* The pin lives inside the transformed container but is counter-scaled to keep a constant size. */}
         <div
@@ -183,7 +187,7 @@ export const DocumentCanvas = memo(function DocumentCanvas({
               onPointerDown={(event) => event.stopPropagation()}
               className="absolute right-3 top-4 z-10 w-56 cursor-default rounded border border-border bg-surface-1 p-3 shadow-xl"
             >
-              <CommentCard artwork={artwork} />
+              <CommentCard artwork={base} />
             </div>
           )}
         </div>

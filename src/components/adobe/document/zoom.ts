@@ -9,14 +9,14 @@ export interface DocumentViewState {
   zoom: number | null;
   panX: number;
   panY: number;
-  isLayerVisible: boolean;
+  hiddenLayerIds: string[];
 }
 
 export const INITIAL_VIEW_STATE: DocumentViewState = {
   zoom: null,
   panX: 0,
   panY: 0,
-  isLayerVisible: true,
+  hiddenLayerIds: [],
 };
 
 export function clampZoom(zoom: number): number {

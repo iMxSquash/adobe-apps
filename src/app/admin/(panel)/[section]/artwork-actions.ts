@@ -22,7 +22,12 @@ import {
   isValidUploadPath,
   storagePathFromUrl,
 } from "@/lib/admin/image";
-import { getArtwork, listTakenSlugs, nextSortOrder } from "@/lib/admin/queries";
+import {
+  getArtwork,
+  listSiblingLayerNames,
+  listTakenSlugs,
+  nextSortOrder,
+} from "@/lib/admin/queries";
 import { slugify, uniqueSlug } from "@/lib/admin/slug";
 import type { ArtworkApp } from "@/lib/content";
 import { revalidateApp } from "@/lib/revalidate";
@@ -87,7 +92,7 @@ export async function saveArtwork(
   const app = appParam;
 
   const title = readText(formData, "title");
-  const layerName = readText(formData, "layer_name");
+  const requestedLayerName = readText(formData, "layer_name");
   const description = readText(formData, "description");
   const requestedSlug = readText(formData, "slug");
   const visible = formData.get("visible") === "on";
@@ -97,7 +102,7 @@ export async function saveArtwork(
 
   if (!title || title.length > MAX_TITLE_LENGTH)
     return { error: `Titre requis (${MAX_TITLE_LENGTH} caractères max).` };
-  if (!layerName || layerName.length > MAX_TITLE_LENGTH) {
+  if (!requestedLayerName || requestedLayerName.length > MAX_TITLE_LENGTH) {
     return { error: `Nom du calque requis (${MAX_TITLE_LENGTH} caractères max).` };
   }
   if (!description || description.length > MAX_DESCRIPTION_LENGTH) {
@@ -113,7 +118,13 @@ export async function saveArtwork(
     return { error: "Le fichier envoyé n'est pas une image valide." };
   }
 
-  const baseSlug = slugify(requestedSlug || title);
+  // Artworks sharing a title are layers of one file: a repeated layer name gets a suffix.
+  const siblingLayerNames = await listSiblingLayerNames(supabase, app, title, id);
+  const layerName = uniqueSlug(requestedLayerName, new Set(siblingLayerNames));
+
+  // Every row needs its own slug: derive it from the layer when the file already has one.
+  const defaultSlugSource = siblingLayerNames.length > 0 ? `${title} ${layerName}` : title;
+  const baseSlug = slugify(requestedSlug || defaultSlugSource);
   const taken = await listTakenSlugs(supabase, "artworks", baseSlug, id);
   if (requestedSlug && taken.has(baseSlug)) {
     if (newImagePath) await removeFromBucket(supabase, newImagePath);
