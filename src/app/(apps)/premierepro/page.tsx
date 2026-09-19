@@ -1,16 +1,17 @@
-import { AppShell } from "@/components/adobe/AppShell";
-import { HomeScreen } from "@/components/adobe/HomeScreen";
+import { PremiereWorkspace } from "@/components/premiere/PremiereWorkspace";
 import { PREMIEREPRO_MENUS } from "@/lib/adobe-menus";
 import { APP_LABEL } from "@/lib/adobe-theme";
+import { getVideos } from "@/lib/content";
+import { isValidYoutubeId } from "@/lib/youtube";
 
-export default function PremiereProPage() {
+export default async function PremiereProPage() {
+  const videos = (await getVideos()).filter((video) => {
+    const isValid = isValidYoutubeId(video.youtube_id);
+    if (!isValid) console.error(`Skipping video "${video.slug}": invalid youtube_id`);
+    return isValid;
+  });
+
   return (
-    <AppShell appLabel={APP_LABEL.premierepro} menus={PREMIEREPRO_MENUS}>
-      <HomeScreen
-        appLabel={APP_LABEL.premierepro}
-        items={[]}
-        emptyMessage="Aucune vidéo pour le moment (arrivent en phase 2)."
-      />
-    </AppShell>
+    <PremiereWorkspace appLabel={APP_LABEL.premierepro} menus={PREMIEREPRO_MENUS} videos={videos} />
   );
 }
