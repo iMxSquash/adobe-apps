@@ -1,16 +1,19 @@
-import { AppShell } from "@/components/adobe/AppShell";
-import { HomeScreen } from "@/components/adobe/HomeScreen";
+import { DocumentWorkspace } from "@/components/adobe/document/DocumentWorkspace";
 import { PHOTOSHOP_MENUS } from "@/lib/adobe-menus";
 import { APP_LABEL } from "@/lib/adobe-theme";
+import { getArtworks } from "@/lib/content";
 
-export default function PhotoshopPage() {
+import { PHOTOSHOP_TOOLS } from "./tools";
+
+export default async function PhotoshopPage() {
+  const artworks = await getArtworks("photoshop");
+
   return (
-    <AppShell appLabel={APP_LABEL.photoshop} menus={PHOTOSHOP_MENUS}>
-      <HomeScreen
-        appLabel={APP_LABEL.photoshop}
-        items={[]}
-        emptyMessage="Aucune œuvre pour le moment (arrivent en phase 2)."
-      />
-    </AppShell>
+    <DocumentWorkspace
+      appLabel={APP_LABEL.photoshop}
+      menus={PHOTOSHOP_MENUS}
+      tools={PHOTOSHOP_TOOLS}
+      artworks={artworks}
+    />
   );
 }
