@@ -1,11 +1,11 @@
 import Image from "next/image";
 
-import type { Artwork } from "@/lib/content";
+import type { ArtworkDocument } from "@/lib/documents";
 
 interface LayersPanelContentProps {
-  artwork: Artwork;
-  isLayerVisible: boolean;
-  onToggleVisibility: () => void;
+  file: ArtworkDocument;
+  hiddenLayerIds: string[];
+  onToggleVisibility: (layerId: string) => void;
 }
 
 function EyeIcon({ isOpen }: { isOpen: boolean }) {
@@ -33,8 +33,8 @@ function LockIcon() {
 }
 
 export function LayersPanelContent({
-  artwork,
-  isLayerVisible,
+  file,
+  hiddenLayerIds,
   onToggleVisibility,
 }: LayersPanelContentProps) {
   return (
@@ -45,21 +45,30 @@ export function LayersPanelContent({
       </div>
 
       <ul className="flex flex-col gap-px">
-        <li className="flex items-center gap-2 bg-accent/30 p-1">
-          <button
-            type="button"
-            aria-pressed={isLayerVisible}
-            aria-label={`${isLayerVisible ? "Masquer" : "Afficher"} le calque ${artwork.layer_name}`}
-            onClick={onToggleVisibility}
-            className="flex h-6 w-6 shrink-0 items-center justify-center text-text-dim hover:text-text"
-          >
-            <EyeIcon isOpen={isLayerVisible} />
-          </button>
-          <span className="relative h-8 w-8 shrink-0 overflow-hidden border border-border bg-surface-2">
-            <Image src={artwork.image_url} alt="" fill sizes="32px" className="object-cover" />
-          </span>
-          <span className="truncate text-text">{artwork.layer_name}</span>
-        </li>
+        {/* Top layer first, like Photoshop: the last one added is drawn above the others. */}
+        {file.layers.toReversed().map((layer, index) => {
+          const isLayerVisible = !hiddenLayerIds.includes(layer.id);
+          return (
+            <li
+              key={layer.id}
+              className={`flex items-center gap-2 p-1 ${index === 0 ? "bg-accent/30" : ""}`}
+            >
+              <button
+                type="button"
+                aria-pressed={isLayerVisible}
+                aria-label={`${isLayerVisible ? "Masquer" : "Afficher"} le calque ${layer.layer_name}`}
+                onClick={() => onToggleVisibility(layer.id)}
+                className="flex h-6 w-6 shrink-0 items-center justify-center text-text-dim hover:text-text"
+              >
+                <EyeIcon isOpen={isLayerVisible} />
+              </button>
+              <span className="relative h-8 w-8 shrink-0 overflow-hidden border border-border bg-surface-2">
+                <Image src={layer.image_url} alt="" fill sizes="32px" className="object-cover" />
+              </span>
+              <span className="truncate text-text">{layer.layer_name}</span>
+            </li>
+          );
+        })}
 
         <li className="flex items-center gap-2 p-1">
           <span className="flex h-6 w-6 shrink-0 items-center justify-center text-text-dim">

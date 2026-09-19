@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type { AdobeApp } from "@/lib/adobe-theme";
 import type { Artwork, ArtworkApp, Video } from "@/lib/content";
+import { documentKey } from "@/lib/documents";
 
 export type AdminTable = "artworks" | "videos";
 
@@ -63,6 +64,25 @@ export async function listTakenSlugs(
   const { data, error } = await query.overrideTypes<{ slug: string }[], { merge: false }>();
   if (error) throw new Error(`Failed to check slugs in ${table}: ${error.message}`);
   return new Set(data.map((row) => row.slug));
+}
+
+/** Layer names of the other artworks in the same file (same app, same title). */
+export async function listSiblingLayerNames(
+  supabase: SupabaseClient,
+  app: ArtworkApp,
+  title: string,
+  excludeId: string | null,
+): Promise<string[]> {
+  const { data, error } = await supabase
+    .from("artworks")
+    .select("id, title, layer_name")
+    .eq("app", app)
+    .overrideTypes<Pick<Artwork, "id" | "title" | "layer_name">[], { merge: false }>();
+  if (error) throw new Error(`Failed to list layers of "${title}": ${error.message}`);
+  const key = documentKey(title);
+  return data
+    .filter((row) => row.id !== excludeId && documentKey(row.title) === key)
+    .map((row) => row.layer_name);
 }
 
 export async function nextSortOrder(
