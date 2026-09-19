@@ -87,12 +87,12 @@
 
 ## Phase 5 — Premiere Pro (premierepro.elwen.dev)
 
-- [ ] Layout 4 zones façon Premiere : **chutier/projet** (en bas à gauche) · **moniteur du programme** (en haut à droite) · **timeline** (en bas à droite) · panneau source/effets (en haut à gauche, factice)
-- [ ] **Moniteur du programme = embed YouTube** : `youtube-nocookie.com/embed/<youtube_id>`, chargé au clic sur une séquence. Façade légère (vignette `i.ytimg.com` + bouton play) avant de monter l'iframe YouTube — perf et pas de cookies au chargement
-- [ ] **Chutier** : liste des `videos` en vignettes YouTube + `title` + `duration`, double-clic → charge la séquence dans le moniteur
-- [ ] **Timeline factice mais vivante** : pistes V1/A1 avec des blocs colorés proportionnels à `duration`, tête de lecture. Bonus : synchroniser la tête de lecture avec le player via l'API YouTube IFrame
-- [ ] Contrôles sous le moniteur (lecture, image par image — pilotent le player via l'API IFrame si le bonus est fait, sinon décoratifs)
-- [ ] Barre du haut : workspaces Premiere (« Montage », « Couleur », « Audio » — factices)
+- [x] Layout 4 zones façon Premiere : **chutier/projet** (en bas à gauche) · **moniteur du programme** (en haut à droite) · **timeline** (en bas à droite) · panneau source/effets (en haut à gauche, factice)
+- [x] **Moniteur du programme = embed YouTube** : `youtube-nocookie.com/embed/<youtube_id>`, chargé au clic sur une séquence. Façade légère (vignette `i.ytimg.com` + bouton play) avant de monter l'iframe YouTube — perf et pas de cookies au chargement
+- [x] **Chutier** : liste des `videos` en vignettes YouTube + `title` + `duration`, double-clic → charge la séquence dans le moniteur
+- [x] **Timeline factice mais vivante** : pistes V1/A1 avec des blocs colorés proportionnels à `duration`, tête de lecture. Bonus : synchroniser la tête de lecture avec le player via l'API YouTube IFrame
+- [x] Contrôles sous le moniteur (lecture, image par image — pilotent le player via l'API IFrame si le bonus est fait, sinon décoratifs)
+- [x] Barre du haut : workspaces Premiere (« Montage », « Couleur », « Audio » — factices)
 - [ ] ⚠️ iframe YouTube **dans** l'iframe du portfolio : ça fonctionne, mais tester tôt le clic play à travers les deux niveaux (et penser à l'overlay drag du portfolio)
 
 ## Phase 6 — Admin (`/admin` sur chaque sous-domaine)
