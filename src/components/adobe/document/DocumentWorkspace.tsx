@@ -16,6 +16,7 @@ import { FILE_EXTENSION, type DocumentVariant } from "./constants";
 import { DocumentCanvas } from "./DocumentCanvas";
 import { LayersPanelContent } from "./LayersPanel";
 import { PropertiesPanelContent } from "./PropertiesPanel";
+import { SwatchesPanelContent } from "./SwatchesPanel";
 import {
   DEFAULT_ZOOM,
   INITIAL_VIEW_STATE,
@@ -118,9 +119,15 @@ export function DocumentWorkspace({
       <Panel title="Commentaires">
         <CommentsPanelContent artwork={activeArtwork} />
       </Panel>
-      <Panel title="Propriétés">
-        <PropertiesPanelContent artwork={activeArtwork} />
-      </Panel>
+      {variant === "illustrator" ? (
+        <Panel title="Nuancier">
+          <SwatchesPanelContent />
+        </Panel>
+      ) : (
+        <Panel title="Propriétés">
+          <PropertiesPanelContent artwork={activeArtwork} />
+        </Panel>
+      )}
     </PanelGroup>
   );
 
