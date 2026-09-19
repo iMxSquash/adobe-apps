@@ -77,12 +77,12 @@
 
 ## Phase 4 — Illustrator (illustrator.elwen.dev)
 
-- [ ] Réutilise le shell de la Phase 3 avec le thème Ai (accent orange) — ne dupliquer AUCUN composant, seules les différences sont locales :
-  - [ ] Canvas = **plan de travail blanc** (pas de damier), zone de travail grise autour, libellé « Plan de travail 1 »
-  - [ ] Onglets `*.ai`
-  - [ ] Toolbar avec les outils Illustrator (sélection, plume, forme, texte…)
-  - [ ] Panneaux droits : Calques (même mécanique vignette + `layer_name` + œil), Commentaires (description), Nuancier factice
-- [ ] Œuvres filtrées sur `app='illustrator'`
+- [x] Réutilise le shell de la Phase 3 avec le thème Ai (accent orange) — ne dupliquer AUCUN composant, seules les différences sont locales :
+  - [x] Canvas = **plan de travail blanc** (pas de damier), zone de travail grise autour, libellé « Plan de travail 1 »
+  - [x] Onglets `*.ai`
+  - [x] Toolbar avec les outils Illustrator (sélection, plume, forme, texte…)
+  - [x] Panneaux droits : Calques (même mécanique vignette + `layer_name` + œil), Commentaires (description), Nuancier factice
+- [x] Œuvres filtrées sur `app='illustrator'`
 - [ ] Vérifier le rendu des deux thèmes côte à côte (deux fenêtres dans le portfolio ouvertes en même temps)
 
 ## Phase 5 — Premiere Pro (premierepro.elwen.dev)

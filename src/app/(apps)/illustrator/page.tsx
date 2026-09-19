@@ -1,16 +1,20 @@
-import { AppShell } from "@/components/adobe/AppShell";
-import { HomeScreen } from "@/components/adobe/HomeScreen";
+import { DocumentWorkspace } from "@/components/adobe/document/DocumentWorkspace";
 import { ILLUSTRATOR_MENUS } from "@/lib/adobe-menus";
 import { APP_LABEL } from "@/lib/adobe-theme";
+import { getArtworks } from "@/lib/content";
 
-export default function IllustratorPage() {
+import { ILLUSTRATOR_TOOLS } from "./tools";
+
+export default async function IllustratorPage() {
+  const artworks = await getArtworks("illustrator");
+
   return (
-    <AppShell appLabel={APP_LABEL.illustrator} menus={ILLUSTRATOR_MENUS}>
-      <HomeScreen
-        appLabel={APP_LABEL.illustrator}
-        items={[]}
-        emptyMessage="Aucune œuvre pour le moment (arrivent en phase 2)."
-      />
-    </AppShell>
+    <DocumentWorkspace
+      appLabel={APP_LABEL.illustrator}
+      variant="illustrator"
+      menus={ILLUSTRATOR_MENUS}
+      tools={ILLUSTRATOR_TOOLS}
+      artworks={artworks}
+    />
   );
 }
