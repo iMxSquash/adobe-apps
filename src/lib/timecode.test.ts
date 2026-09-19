@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { durationToSeconds, formatTimecode } from "./timecode";
+import { durationToSeconds, formatRulerLabel, formatTimecode } from "./timecode";
 
 describe("durationToSeconds", () => {
   it("parses mm:ss", () => {
@@ -36,5 +36,18 @@ describe("formatTimecode", () => {
 
   it("clamps negative values to zero", () => {
     expect(formatTimecode(-5)).toBe("00:00:00:00");
+  });
+});
+
+describe("formatRulerLabel", () => {
+  it("formats minutes and seconds under an hour", () => {
+    expect(formatRulerLabel(0)).toBe("00:00");
+    expect(formatRulerLabel(75)).toBe("01:15");
+    expect(formatRulerLabel(3599)).toBe("59:59");
+  });
+
+  it("adds the hour once past it", () => {
+    expect(formatRulerLabel(3600)).toBe("1:00:00");
+    expect(formatRulerLabel(3723)).toBe("1:02:03");
   });
 });

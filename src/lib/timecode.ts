@@ -26,3 +26,12 @@ export function formatTimecode(totalSeconds: number, frameRate = FRAME_RATE): st
   ];
   return parts.map((part) => String(part).padStart(2, "0")).join(":");
 }
+
+/** Ruler label for a whole number of seconds: `MM:SS`, or `H:MM:SS` once past an hour so it stays unambiguous. */
+export function formatRulerLabel(totalSeconds: number): string {
+  const hours = Math.floor(totalSeconds / SECONDS_PER_HOUR);
+  const minutes = Math.floor((totalSeconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
+  const seconds = Math.floor(totalSeconds % SECONDS_PER_MINUTE);
+  const mmss = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  return hours > 0 ? `${hours}:${mmss}` : mmss;
+}

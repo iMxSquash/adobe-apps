@@ -77,8 +77,9 @@ export function PremiereWorkspace({ appLabel, menus, videos }: PremiereWorkspace
     );
   }
 
+  // The player knows the real length; the stored text is typed by hand and only covers the wait before it is ready.
   const clipSeconds =
-    durationToSeconds(activeVideo.duration) ?? player.durationSeconds ?? FALLBACK_CLIP_SECONDS;
+    player.durationSeconds ?? durationToSeconds(activeVideo.duration) ?? FALLBACK_CLIP_SECONDS;
 
   return (
     <AppShell appLabel={appLabel} menus={menus} onMenuCommand={handleMenuCommand}>
