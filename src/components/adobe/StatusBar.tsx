@@ -12,27 +12,32 @@ const ZOOM_BUTTON_CLASS =
 export function StatusBar({ zoom, width, height, onZoomIn, onZoomOut }: StatusBarProps) {
   return (
     <>
-      {onZoomOut && (
-        <button
-          type="button"
-          aria-label="Zoom arrière"
-          onClick={onZoomOut}
-          className={ZOOM_BUTTON_CLASS}
-        >
-          -
-        </button>
-      )}
-      <span>{Math.round(zoom)}%</span>
-      {onZoomIn && (
-        <button
-          type="button"
-          aria-label="Zoom avant"
-          onClick={onZoomIn}
-          className={ZOOM_BUTTON_CLASS}
-        >
-          +
-        </button>
-      )}
+      {/* Grouped so the parent status bar can push it to one end and the dimensions
+          to the other (see AppShell's max-sm:justify-between) instead of every
+          element floating independently in the flex row. */}
+      <span className="flex items-center gap-3">
+        {onZoomOut && (
+          <button
+            type="button"
+            aria-label="Zoom arrière"
+            onClick={onZoomOut}
+            className={ZOOM_BUTTON_CLASS}
+          >
+            -
+          </button>
+        )}
+        <span>{Math.round(zoom)}%</span>
+        {onZoomIn && (
+          <button
+            type="button"
+            aria-label="Zoom avant"
+            onClick={onZoomIn}
+            className={ZOOM_BUTTON_CLASS}
+          >
+            +
+          </button>
+        )}
+      </span>
       {width != null && height != null && (
         <span>
           {width} x {height} px

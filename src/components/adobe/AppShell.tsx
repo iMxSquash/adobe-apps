@@ -116,7 +116,10 @@ export function AppShell({
         {panels}
       </div>
 
-      <div className="flex h-6 shrink-0 items-center justify-end gap-3 border-t border-border bg-surface-1 px-2 text-[11px] text-text-dim">
+      {/* max-sm (real phone width) rather than the shell's @container breakpoints: this split
+          only makes sense once there's no room to keep zoom and dimensions together, which
+          happens well below the portfolio window ever gets narrowed to. */}
+      <div className="flex h-6 shrink-0 items-center justify-end gap-3 border-t border-border bg-surface-1 px-2 text-[11px] text-text-dim max-sm:justify-between">
         {statusBar}
       </div>
     </div>
