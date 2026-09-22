@@ -7,6 +7,8 @@ interface PanelProps {
   defaultCollapsed?: boolean;
   /** Drops the content padding, for panels that manage their own layout edge to edge. */
   flush?: boolean;
+  /** Shown instead of the title's initials in the collapsed rail (see PanelGroup). */
+  icon?: ReactNode;
   children: ReactNode;
 }
 
@@ -41,7 +43,9 @@ export function PanelGroup({ children }: { children: ReactNode }) {
         {panels}
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col items-center gap-1 overflow-y-auto py-2 @4xl:hidden">
+      {/* gap-3 rather than a tighter gap-1: these are touch targets on mobile, spaced out
+          to avoid a mis-tap opening the wrong panel. */}
+      <div className="flex min-h-0 flex-1 flex-col items-center gap-3 overflow-y-auto py-2 @4xl:hidden">
         {panels.map((panel, index) => (
           <button
             key={panel.props.title}
@@ -49,11 +53,11 @@ export function PanelGroup({ children }: { children: ReactNode }) {
             aria-label={panel.props.title}
             aria-expanded={openRailIndex === index}
             onClick={() => setOpenRailIndex((current) => (current === index ? null : index))}
-            className={`flex h-7 w-7 items-center justify-center rounded text-[10px] font-medium uppercase text-text-dim hover:text-text ${
+            className={`flex h-8 w-8 items-center justify-center rounded text-[10px] font-medium uppercase text-text-dim hover:text-text ${
               openRailIndex === index ? "bg-surface-2 text-text" : ""
             }`}
           >
-            {panel.props.title.slice(0, 2)}
+            {panel.props.icon ?? panel.props.title.slice(0, 2)}
           </button>
         ))}
       </div>

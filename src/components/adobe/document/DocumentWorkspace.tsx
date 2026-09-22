@@ -16,6 +16,12 @@ import { CommentsPanelContent } from "./CommentsPanel";
 import { FILE_EXTENSION, type DocumentVariant } from "./constants";
 import { DocumentCanvas } from "./DocumentCanvas";
 import { LayersPanelContent } from "./LayersPanel";
+import {
+  CommentsPanelIcon,
+  LayersPanelIcon,
+  PropertiesPanelIcon,
+  SwatchesPanelIcon,
+} from "./panel-icons";
 import { PropertiesPanelContent } from "./PropertiesPanel";
 import { SwatchesPanelContent } from "./SwatchesPanel";
 import {
@@ -109,7 +115,7 @@ export function DocumentWorkspace({
 
   const panels = (
     <PanelGroup>
-      <Panel title="Calques">
+      <Panel title="Calques" icon={<LayersPanelIcon />}>
         <LayersPanelContent
           file={activeFile}
           hiddenLayerIds={activeView.hiddenLayerIds}
@@ -123,15 +129,15 @@ export function DocumentWorkspace({
           }
         />
       </Panel>
-      <Panel title="Commentaires">
+      <Panel title="Commentaires" icon={<CommentsPanelIcon />}>
         <CommentsPanelContent artwork={documentBase(activeFile)} />
       </Panel>
       {variant === "illustrator" ? (
-        <Panel title="Nuancier">
+        <Panel title="Nuancier" icon={<SwatchesPanelIcon />}>
           <SwatchesPanelContent />
         </Panel>
       ) : (
-        <Panel title="Propriétés">
+        <Panel title="Propriétés" icon={<PropertiesPanelIcon />}>
           <PropertiesPanelContent file={activeFile} />
         </Panel>
       )}
