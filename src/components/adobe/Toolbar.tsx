@@ -16,6 +16,12 @@ interface ToolbarProps {
 
 const TOOLTIP_DELAY_MS = 500;
 
+// Below `sm` (a real narrow phone, not just the portfolio window narrowed via @xl below):
+// clears the toggle from the top edge. 92px = 60px + 28px (the h-7 button) + 4px gap, so the
+// dropdown sits directly under it.
+const MOBILE_TOGGLE_TOP = "top-[60px] sm:top-1";
+const MOBILE_DROPDOWN_TOP = "top-[92px] sm:top-9";
+
 function ToolButtons({ tools, activeTool, onSelect }: ToolbarProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -67,12 +73,14 @@ export function Toolbar(props: ToolbarProps) {
         onClick={() => setOpen((value) => !value)}
         aria-label="Outils"
         aria-expanded={open}
-        className="absolute left-1 top-1 z-40 flex h-7 w-7 items-center justify-center rounded border border-border bg-surface-2 text-text-dim hover:text-text @xl:hidden"
+        className={`absolute left-1 ${MOBILE_TOGGLE_TOP} z-40 flex h-7 w-7 items-center justify-center rounded border border-border bg-surface-2 text-text-dim hover:text-text @xl:hidden`}
       >
         ⋮
       </button>
       {open && (
-        <div className="absolute left-1 top-9 z-40 flex w-9 flex-col items-center gap-1 rounded border border-border bg-surface-1 py-2 shadow-xl @xl:hidden">
+        <div
+          className={`absolute left-1 ${MOBILE_DROPDOWN_TOP} z-40 flex w-9 flex-col items-center gap-1 rounded border border-border bg-surface-1 py-2 shadow-xl @xl:hidden`}
+        >
           <ToolButtons {...props} />
         </div>
       )}

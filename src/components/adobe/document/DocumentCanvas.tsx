@@ -7,7 +7,14 @@ import { documentBase, type ArtworkDocument } from "@/lib/documents";
 
 import { CommentCard } from "./CommentCard";
 import { ARTBOARD_LABEL, COMMENT_PIN_POSITION, type DocumentVariant } from "./constants";
-import { clampZoom, DEFAULT_ZOOM, fitZoom, zoomAtPoint, type DocumentViewState } from "./zoom";
+import {
+  clampZoom,
+  DEFAULT_ZOOM,
+  fitZoom,
+  pinchZoom,
+  zoomAtPoint,
+  type DocumentViewState,
+} from "./zoom";
 
 // Transparency checkerboard: 8px squares.
 const CHECKERBOARD_STYLE = {
@@ -38,7 +45,13 @@ export const DocumentCanvas = memo(function DocumentCanvas({
   onViewChange,
 }: DocumentCanvasProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
-  const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
+  // Every active pointer's last known position, keyed by pointerId — single- or two-finger
+  // (pinch) touch, or a mouse drag. Read before/after mutating it in handlePointerMove to get
+  // the previous/next frame; nothing else needs to cache a duplicate snapshot.
+  const activePointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
+  // Cached for the whole pinch gesture rather than re-read on every move (it can't change:
+  // the viewport is touch-action: none, so no scroll happens mid-gesture).
+  const pinchRectRef = useRef<DOMRect | null>(null);
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const [isCommentOpen, setIsCommentOpen] = useState(false);
 
@@ -99,21 +112,63 @@ export const DocumentCanvas = memo(function DocumentCanvas({
     return () => viewport.removeEventListener("wheel", handleWheel);
   }, [id, onViewChange, panBy]);
 
+  // Distance and midpoint (viewport-center-relative, like zoomAtPoint) of the two active
+  // pointers, for pinch-to-zoom. Only meaningful once at least 2 pointers are down.
+  function readPinchGeometry(rect: DOMRect) {
+    const pointers = activePointersRef.current.values();
+    const a = pointers.next().value!;
+    const b = pointers.next().value!;
+    return {
+      distance: Math.hypot(a.x - b.x, a.y - b.y),
+      midX: (a.x + b.x) / 2 - rect.left - rect.width / 2,
+      midY: (a.y + b.y) / 2 - rect.top - rect.height / 2,
+    };
+  }
+
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     setIsCommentOpen(false);
-    lastPointerRef.current = { x: event.clientX, y: event.clientY };
     event.currentTarget.setPointerCapture(event.pointerId);
+    activePointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (activePointersRef.current.size >= 2) {
+      pinchRectRef.current = event.currentTarget.getBoundingClientRect();
+    }
   }
 
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
-    const last = lastPointerRef.current;
-    if (!last) return;
-    lastPointerRef.current = { x: event.clientX, y: event.clientY };
-    panBy(event.clientX - last.x, event.clientY - last.y);
+    const pointers = activePointersRef.current;
+    if (!pointers.has(event.pointerId)) return;
+
+    if (pointers.size >= 2 && pinchRectRef.current) {
+      const rect = pinchRectRef.current;
+      // Read the pinch geometry before, then after, moving this one pointer: the map
+      // already holds every other finger's current position, so that's the full previous
+      // vs. next frame — no separate "last pinch" ref to keep in sync.
+      const previous = readPinchGeometry(rect);
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      const next = readPinchGeometry(rect);
+      // Guards a same-spot start (distance 0) from producing an infinite ratio.
+      if (previous.distance === 0) return;
+      onViewChange(id, (current) =>
+        pinchZoom(
+          current,
+          next.distance / previous.distance,
+          previous.midX,
+          previous.midY,
+          next.midX - previous.midX,
+          next.midY - previous.midY,
+        ),
+      );
+      return;
+    }
+
+    const last = pointers.get(event.pointerId);
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (last) panBy(event.clientX - last.x, event.clientY - last.y);
   }
 
-  function handlePointerEnd() {
-    lastPointerRef.current = null;
+  function handlePointerEnd(event: PointerEvent<HTMLDivElement>) {
+    activePointersRef.current.delete(event.pointerId);
+    if (activePointersRef.current.size < 2) pinchRectRef.current = null;
   }
 
   return (

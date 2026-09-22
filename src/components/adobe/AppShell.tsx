@@ -70,7 +70,16 @@ export function AppShell({
   }, [openMenu]);
 
   return (
-    <div ref={rootRef} className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
+    <div
+      ref={rootRef}
+      // Embedded + mobile only: the portfolio's own iOS status bar already sits above the
+      // iframe, but a little extra breathing room reads better than content touching the very
+      // top edge. The padding is on this bg-surface-0-backed box (see ThemeProvider), so the
+      // gap keeps the app's background color instead of showing through to blank/white.
+      className={`flex h-full min-h-0 flex-1 flex-col overflow-hidden ${
+        isEmbedded ? "pt-3 sm:pt-0" : ""
+      }`}
+    >
       {!isEmbedded && (
         <div className="flex h-7 shrink-0 items-center gap-0.5 border-b border-border bg-surface-1 px-2 text-xs sm:gap-1 text-text-dim">
           <span className="mr-1 whitespace-nowrap font-medium text-text sm:mr-2">{appLabel}</span>
@@ -116,7 +125,10 @@ export function AppShell({
         {panels}
       </div>
 
-      <div className="flex h-6 shrink-0 items-center justify-end gap-3 border-t border-border bg-surface-1 px-2 text-[11px] text-text-dim">
+      {/* max-sm (real phone width) rather than the shell's @container breakpoints: this split
+          only makes sense once there's no room to keep zoom and dimensions together, which
+          happens well below the portfolio window ever gets narrowed to. */}
+      <div className="flex h-6 shrink-0 items-center justify-end gap-3 border-t border-border bg-surface-1 px-2 text-[11px] text-text-dim max-sm:justify-between">
         {statusBar}
       </div>
     </div>
