@@ -7,6 +7,7 @@ import {
   clampZoom,
   fitZoom,
   nextZoomStep,
+  pinchZoom,
   zoomAtPoint,
 } from "./zoom";
 
@@ -86,6 +87,35 @@ describe("zoomAtPoint", () => {
 
   it("does not mutate the previous state", () => {
     zoomAtPoint(view, 200, 10, 10);
+    expect(view).toMatchObject({ zoom: 100, panX: 40, panY: -20 });
+  });
+});
+
+describe("pinchZoom", () => {
+  const view = { ...INITIAL_VIEW_STATE, zoom: 100, panX: 40, panY: -20 };
+
+  it("scales the zoom by the finger-distance ratio", () => {
+    const next = pinchZoom(view, 2, 0, 0, 0, 0);
+    expect(next.zoom).toBe(200);
+  });
+
+  it("clamps the scaled zoom to the bounds", () => {
+    expect(pinchZoom(view, 10, 0, 0, 0, 0).zoom).toBe(MAX_ZOOM);
+    expect(pinchZoom(view, 0.01, 0, 0, 0, 0).zoom).toBe(MIN_ZOOM);
+  });
+
+  it("anchors on the previous midpoint like zoomAtPoint, then adds the midpoint drift as pan", () => {
+    const anchored = zoomAtPoint(view, 200, 0, 0);
+    const next = pinchZoom(view, 2, 0, 0, 5, 7);
+    expect(next).toMatchObject({
+      zoom: 200,
+      panX: anchored.panX + 5,
+      panY: anchored.panY + 7,
+    });
+  });
+
+  it("does not mutate the previous state", () => {
+    pinchZoom(view, 2, 0, 0, 5, 7);
     expect(view).toMatchObject({ zoom: 100, panX: 40, panY: -20 });
   });
 });

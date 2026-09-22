@@ -55,3 +55,27 @@ export function zoomAtPoint(
     panY: py - (py - state.panY) * ratio,
   };
 }
+
+/**
+ * Two-finger pinch: scales by `distanceRatio` (new finger distance / previous finger
+ * distance) anchored on the pinch midpoint before this move, then applies the
+ * midpoint's own drift (`midDeltaX`/`midDeltaY`) as a plain pan so the gesture also
+ * tracks a simultaneous two-finger drag. All coordinates are viewport-center-relative,
+ * like `zoomAtPoint`.
+ */
+export function pinchZoom(
+  state: DocumentViewState,
+  distanceRatio: number,
+  previousMidX: number,
+  previousMidY: number,
+  midDeltaX: number,
+  midDeltaY: number,
+): DocumentViewState {
+  const zoomed = zoomAtPoint(
+    state,
+    clampZoom((state.zoom ?? DEFAULT_ZOOM) * distanceRatio),
+    previousMidX,
+    previousMidY,
+  );
+  return { ...zoomed, panX: zoomed.panX + midDeltaX, panY: zoomed.panY + midDeltaY };
+}
