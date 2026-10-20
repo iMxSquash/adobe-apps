@@ -2,23 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 
 import { ADMIN_APP_HEADER } from "@/lib/admin/section";
+import { APPS, appForHost, type AppId } from "@/lib/app-host";
 import { getSupabaseEnv } from "@/lib/supabase-env";
-
-const APPS = ["photoshop", "illustrator", "premierepro"] as const;
-type AppId = (typeof APPS)[number];
-
-const APP_BY_HOST: Record<string, AppId> = {
-  "photoshop.elwen.dev": "photoshop",
-  "illustrator.elwen.dev": "illustrator",
-  "premierepro.elwen.dev": "premierepro",
-};
-
-function appForHost(host: string): AppId | undefined {
-  return (
-    APP_BY_HOST[host] ??
-    (host.match(/^(photoshop|illustrator|premierepro)\.localhost$/)?.[1] as AppId | undefined)
-  );
-}
 
 const ADMIN_PATH = "/admin";
 const ADMIN_LOGIN_PATH = "/admin/login";
