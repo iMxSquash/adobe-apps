@@ -106,6 +106,8 @@
 
 ## Phase 7 — Embed-readiness & mise en ligne
 
+- [x] SEO par sous-domaine : metadata, JSON-LD (`author` vers le portfolio), `robots.txt`, `sitemap.xml`, `llms.txt` propres à chaque hôte
+- [ ] SEO : une URL `/[slug]` par œuvre et par vidéo, sitemaps soumis sur GSC et Bing
 - [ ] Dérouler la skill **`portfolio-embed-check`** sur les 3 sous-domaines (headers, `window.top`, liens externes en `_blank`, harnais de test 700×450)
 - [ ] Perf : first paint < 2s (images `next/image`, façade YouTube, pas d'écran bloquant à l'ouverture — l'écran d'accueil Adobe EST la landing)
 - [ ] Test resize continu dans le harnais : les panneaux se replient proprement, pas de scroll horizontal
