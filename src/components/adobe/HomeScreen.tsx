@@ -25,7 +25,7 @@ export function HomeScreen({ appLabel, items, emptyMessage, onOpen }: HomeScreen
         <span className="text-text-dim">Fichiers</span>
       </aside>
       <div className="min-h-0 flex-1 overflow-y-auto p-6">
-        <h1 className="mb-4 text-lg font-medium text-text">Bienvenue dans {appLabel}</h1>
+        <h2 className="mb-4 text-lg font-medium text-text">Bienvenue dans {appLabel}</h2>
         {items.length === 0 ? (
           <p className="text-sm text-text-dim">{emptyMessage}</p>
         ) : (
