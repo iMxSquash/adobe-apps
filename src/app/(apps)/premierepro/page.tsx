@@ -1,7 +1,9 @@
+import { AppSeoSummary } from "@/components/seo/AppSeoSummary";
 import { PremiereWorkspace } from "@/components/premiere/PremiereWorkspace";
 import { PREMIEREPRO_MENUS } from "@/lib/adobe-menus";
 import { APP_LABEL } from "@/lib/adobe-theme";
 import { getVideos } from "@/lib/content";
+import { videoToJsonLd } from "@/lib/seo";
 import { isValidYoutubeId } from "@/lib/youtube";
 
 export default async function PremiereProPage() {
@@ -12,6 +14,13 @@ export default async function PremiereProPage() {
   });
 
   return (
-    <PremiereWorkspace appLabel={APP_LABEL.premierepro} menus={PREMIEREPRO_MENUS} videos={videos} />
+    <>
+      <AppSeoSummary app="premierepro" works={videos} jsonLd={videos.map(videoToJsonLd)} />
+      <PremiereWorkspace
+        appLabel={APP_LABEL.premierepro}
+        menus={PREMIEREPRO_MENUS}
+        videos={videos}
+      />
+    </>
   );
 }
